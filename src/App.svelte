@@ -172,6 +172,7 @@
       if(eventExists && eventExists.length > 0){
         allEvents = allEvents.filter((q) => q.id != currentEvent.id);
       }
+      isEdit = false;
       toggle()
   }
 
@@ -337,7 +338,7 @@
   <div class="container">
     <div class="text">
       <h1 class="title">Acorn calender</h1>
-      <p class="sub-heading">Click on calender to book an event</p>
+      <p class="sub-heading">Click on the calender to book an event</p>
     </div>
 
     <div
@@ -540,7 +541,10 @@
           {/if}
           <div style="display: flex; justify-content: flex-end;">
             <Button color="primary" on:click={saveEvent}>Save event</Button>
-            <Button color="secondary" on:click={toggle}>Cancel</Button>
+            <Button color="secondary" on:click={() => {
+              isEdit = false;
+              toggle();
+            })}>Cancel</Button>
           </div>
         </div>
       </ModalFooter>
