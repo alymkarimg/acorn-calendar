@@ -113,11 +113,12 @@
       var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
       if(eventExists && eventExists.length > 0){
         allEvents = allEvents.filter((q) => q.id != currentEvent.id);
+        allEvents = allEvents
       }
 
       // check if events overlap
 
-      if(!currentTarget.date){
+      if(!currentEvent.date){
         notify({
         type: "danger",
         title: "Validation failed", /* Message title */
