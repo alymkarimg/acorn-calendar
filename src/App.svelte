@@ -152,6 +152,7 @@
           .includes(e.date);
       });
       isEdit = false;
+      currentEvent = null
     } else {
       // create an alert
       notify({
