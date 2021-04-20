@@ -544,7 +544,7 @@
             <Button color="secondary" on:click={() => {
               isEdit = false;
               toggle();
-            })}>Cancel</Button>
+            }}>Cancel</Button>
           </div>
         </div>
       </ModalFooter>
