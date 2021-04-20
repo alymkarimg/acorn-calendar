@@ -117,6 +117,17 @@
 
       // check if events overlap
 
+      if(!currentTarget.date){
+        notify({
+        type: "danger",
+        title: "Validation failed", /* Message title */
+        message: "Please select a date",
+        timeout: 5000 /* Timeout in millis */,
+        showAlways: false /* Boolean */,
+      }); 
+        return
+      }
+
       // validate title
       if(!currentEvent.title){
         notify({
