@@ -746,15 +746,6 @@
     margin: 5px;
   }
 
-  :global(.notifications.bottom-right) {
-    position: absolute;
-    z-index: 10000;
-    left: 0px;
-    top: 0px;
-    width: 200px;
-    height: 50px;
-  }
-
   .session-title,
   .session-time,
   .session-track,
