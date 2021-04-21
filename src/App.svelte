@@ -1,6 +1,6 @@
 <script>
-  import { onMount } from "svelte";
-  import { sessions, selectedEvent } from "./stores.js";
+  import { onMount, afterUpdate, beforeUpdate } from "svelte";
+  import { sessions, selectedEvent, currentDate } from "./stores.js";
   import {
     Button,
     Modal,
@@ -57,12 +57,16 @@
     allEvents = value;
   });
 
+  currentDate.subscribe((value) => {
+    date = value;
+  });
+
   selectedEvent.subscribe((value) => {
     currentEvent = value;
   });
 
   onMount(() => {
-    // todo, add event listener add/remove listener on screen click
+    // add event listener add/remove listener on screen click
     const timeslots = [...document.querySelectorAll(".time-slot")];
     timeslots.forEach((timeslot) => {
       timeslot.addEventListener("click", createModal);
@@ -74,31 +78,58 @@
     });
   });
 
-  // whenever events change, add a listener to each div
-  useEffect(
-    () => {
-      const eventDivs = [...document.querySelectorAll(".session")];
-      eventDivs.forEach((event) => {
-        event.addEventListener("click", editModal);
-      });
-    }
-  ), () => [week];
+  beforeUpdate(() => {
+    // ...the DOM is now in sync with the data
 
-  // filter al events based on week
-  useEffect(
-    () => {
-      events = allEvents.filter((ev) => {
-        var isInWeek = week.map((q) => {
-          console.log(q.toDateString(), new Date(ev.date).toDateString())
-          return q.toDateString() == new Date(ev.date).toDateString() ? true : false
-        });
-        console.log(isInWeek)
-        return isInWeek.includes(true)
-
+    // get all events in the current week
+    events = allEvents.filter((ev) => {
+      var isInWeek = week.map((q) => {
+        return q.toDateString() == new Date(ev.date).toDateString()
+          ? true
+          : false;
       });
-    },
-    () => [allEvents]
-  );
+      console.log(isInWeek);
+      return isInWeek.includes(true);
+    });
+  });
+
+  afterUpdate(() => {
+    // ...the DOM is now in sync with the data
+
+    // events.forEach( event => { renderEvent(event) } )
+
+    // before the page changes, the event listeners are added
+    const eventDivs = [...document.querySelectorAll(".session")];
+    eventDivs.forEach((event) => {
+      event.addEventListener("click", editModal);
+    });
+  });
+
+  // // whenever events change, add a listener to each div
+  // useEffect(() => {
+  //   // before the page changes, the event listeners are added
+  //   const eventDivs = [...document.querySelectorAll(".session")];
+  //   eventDivs.forEach((event) => {
+  //     event.addEventListener("click", editModal);
+  //   });
+  // }),
+  //   () => [events, date];
+
+  // filter all events based on week
+  // useEffect(
+  //   () => {
+  //     events = allEvents.filter((ev) => {
+  //       var isInWeek = week.map((q) => {
+  //         return q.toDateString() == new Date(ev.date).toDateString()
+  //           ? true
+  //           : false;
+  //       });
+  //       console.log(isInWeek);
+  //       return isInWeek.includes(true);
+  //     });
+  //   },
+  //   () => [date]
+  // );
 
   const saveEvent = (e) => {
     if (validateStartAndEndTimes(currentEvent)) {
@@ -133,17 +164,24 @@
         return;
       }
 
+      var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
+
+      if (eventExists && eventExists.length > 0) {
+        allEvents = allEvents.filter((q) => q.id != currentEvent.id);
+        allEvents = allEvents;
+      }
+
       allEvents.push(currentEvent);
       allEvents = allEvents;
       isOpen = false;
       events = allEvents.filter((ev) => {
         var isInWeek = week.map((q) => {
-          console.log(q.toDateString(), new Date(ev.date).toDateString())
-          return q.toDateString() == new Date(ev.date).toDateString() ? true : false
+          return q.toDateString() == new Date(ev.date).toDateString()
+            ? true
+            : false;
         });
-        console.log(isInWeek)
-        return isInWeek.includes(true)
-
+        console.log(isInWeek);
+        return isInWeek.includes(true);
       });
       isEdit = false;
       currentEvent = null;
@@ -161,7 +199,6 @@
   };
 
   const deleteEvent = (e) => {
-    var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
     if (allEvents.length == 0) {
       notify({
         type: "danger",
@@ -171,6 +208,9 @@
         showAlways: false /* Boolean */,
       });
     }
+
+    var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
+
     if (eventExists && eventExists.length > 0) {
       allEvents = allEvents.filter((q) => q.id != currentEvent.id);
       allEvents = allEvents;

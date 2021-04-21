@@ -79,6 +79,8 @@ export const convertTimestoDatetimes = (time) => {
 }
 
 export const getWeek = (dt) => {
+    dt = new Date(dt)
+    
     function findMonday(dt) {
         while (dt.getDay() != 1) {
             dt.setDate(dt.getDate() - 1);
