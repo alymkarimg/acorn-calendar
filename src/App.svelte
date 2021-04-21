@@ -97,7 +97,7 @@
           .includes(e.date);
       });
     },
-    () => [week]
+    () => [week, allEvents]
   );
 
   const saveEvent = (e) => {
@@ -160,6 +160,16 @@
 
   const deleteEvent = (e) => {
     var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
+    if(allEvents.length == 0){
+      notify({
+        type: "danger",
+        title: "Error" /* Message title */,
+        message:
+          "No event to delete" /* Message */,
+        timeout: 5000 /* Timeout in millis */,
+        showAlways: false /* Boolean */,
+      });
+    }
     if (eventExists && eventExists.length > 0) {
       allEvents = allEvents.filter((q) => q.id != currentEvent.id);
       allEvents = allEvents;
