@@ -108,13 +108,6 @@
         ? currentEvent.track
         : currentEvent.date.toLocaleTimeString("en-UK");
 
-      // if event already exists in events array, remove and replace it it
-      var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
-      if (eventExists && eventExists.length > 0) {
-        allEvents = allEvents.filter((q) => q.id != currentEvent.id);
-        allEvents = allEvents;
-      }
-
       // check if events overlap
 
       if (!currentEvent.date) {
