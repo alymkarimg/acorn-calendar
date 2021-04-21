@@ -22,6 +22,7 @@
   import { useEffect } from "./Hooks";
   import Notifications from "svelte-notify";
   import { notify } from "svelte-notify";
+import { current_component } from "svelte/internal";
 
   const flatpickrOptions = {
     // defaultDate: new Date().toDateString(),
@@ -138,6 +139,31 @@
       currentEvent.track = currentEvent.track
         ? currentEvent.track
         : currentEvent.date.toLocaleTimeString("en-UK");
+
+      const elementOverlaps = allEvents.map((element) => {
+
+      // add usecase for element that is inside the times of another element
+      let StartA = convertTimestoDatetimes(currentEvent.start)
+      let EndA = convertTimestoDatetimes(currentEvent.end)
+      let StartB = convertTimestoDatetimes(element.start)
+      let EndB = convertTimestoDatetimes(element.end)
+
+        return element.date == currentEvent.date &&
+        element.id != currentEvent.id &&
+        (StartA < EndB && EndA > StartB)
+      })
+
+
+      if(elementOverlaps.includes(true)){
+        notify({
+          type: "danger",
+          title: "Validation failed" /* Message title */,
+          message: "Event overlaps with another event",
+          timeout: 5000 /* Timeout in millis */,
+          showAlways: false /* Boolean */,
+        });
+        return;
+      }
 
       // check if events overlap
 
