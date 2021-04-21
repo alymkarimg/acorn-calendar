@@ -563,13 +563,10 @@
           {/if}
           <div style="display: flex; justify-content: flex-end;">
             <Button color="primary" on:click={saveEvent}>Save event</Button>
-            <Button
-              color="secondary"
-              on:click={() => {
-                isEdit = false;
-                toggle();
-              }}>Cancel</Button
-            >
+            <Button color="secondary" on:click={() => {
+              isEdit = false;
+              toggle();
+            }}>Cancel</Button>
           </div>
         </div>
       </ModalFooter>
