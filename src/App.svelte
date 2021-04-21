@@ -81,23 +81,23 @@
       eventDivs.forEach((event) => {
         event.addEventListener("click", editModal);
       });
-    },
-    () => [events]
-  );
+    }
+  ), () => [week];
 
   // filter al events based on week
   useEffect(
     () => {
-      events = allEvents.filter((e) => {
-        return week
-          .map((q) => {
-            console.log(q.toDateString());
-            return q.toDateString();
-          })
-          .includes(e.date);
+      events = allEvents.filter((ev) => {
+        var isInWeek = week.map((q) => {
+          console.log(q.toDateString(), new Date(ev.date).toDateString())
+          return q.toDateString() == new Date(ev.date).toDateString() ? true : false
+        });
+        console.log(isInWeek)
+        return isInWeek.includes(true)
+
       });
     },
-    () => [week, allEvents]
+    () => [allEvents]
   );
 
   const saveEvent = (e) => {
@@ -136,12 +136,14 @@
       allEvents.push(currentEvent);
       allEvents = allEvents;
       isOpen = false;
-      events = allEvents.filter((e) => {
-        return week
-          .map((q) => {
-            return q.toDateString();
-          })
-          .includes(new Date(e.date).toDateString());
+      events = allEvents.filter((ev) => {
+        var isInWeek = week.map((q) => {
+          console.log(q.toDateString(), new Date(ev.date).toDateString())
+          return q.toDateString() == new Date(ev.date).toDateString() ? true : false
+        });
+        console.log(isInWeek)
+        return isInWeek.includes(true)
+
       });
       isEdit = false;
       currentEvent = null;
