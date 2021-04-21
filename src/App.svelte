@@ -8,7 +8,7 @@
     ModalFooter,
     ModalHeader,
   } from "sveltestrap";
-  import { v4 as uuidv4 } from 'uuid';
+  import { v4 as uuidv4 } from "uuid";
   import Flatpickr from "svelte-flatpickr";
   import "flatpickr/dist/flatpickr.css";
   import "flatpickr/dist/themes/light.css";
@@ -16,7 +16,7 @@
     formatEndTime,
     getWeek,
     validateStartAndEndTimes,
-    convertTimestoDatetimes
+    convertTimestoDatetimes,
   } from "./HelperFunctions";
   import "./Date";
   import { useEffect } from "./Hooks";
@@ -26,12 +26,11 @@
   const flatpickrOptions = {
     // defaultDate: new Date().toDateString(),
     enableTime: false,
-    defaltDate: new Date(),
     formatDate: (date, format, locale) => {
       // locale can also be used
       return new Date(date).toDateString();
     },
-    minDate: new Date().setHours(0,0,0,0)
+    minDate: new Date().setHours(0, 0, 0, 0),
   };
 
   export let isOpen = false, // modal
@@ -98,7 +97,7 @@
           .includes(e.date);
       });
     },
-    () => [week, events]
+    () => [week]
   );
 
   const saveEvent = (e) => {
@@ -107,38 +106,38 @@
       currentEvent.title = currentEvent.title;
       currentEvent.track = currentEvent.track
         ? currentEvent.track
-        : currentEvent.date;
+        : currentEvent.date.toLocaleTimeString("en-UK");
 
       // if event already exists in events array, remove and replace it it
       var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
-      if(eventExists && eventExists.length > 0){
+      if (eventExists && eventExists.length > 0) {
         allEvents = allEvents.filter((q) => q.id != currentEvent.id);
-        allEvents = allEvents
+        allEvents = allEvents;
       }
 
       // check if events overlap
 
-      if(!currentEvent.date){
+      if (!currentEvent.date) {
         notify({
-        type: "danger",
-        title: "Validation failed", /* Message title */
-        message: "Please select a date",
-        timeout: 5000 /* Timeout in millis */,
-        showAlways: false /* Boolean */,
-      }); 
-        return
+          type: "danger",
+          title: "Validation failed" /* Message title */,
+          message: "Please select a date",
+          timeout: 5000 /* Timeout in millis */,
+          showAlways: false /* Boolean */,
+        });
+        return;
       }
 
       // validate title
-      if(!currentEvent.title){
+      if (!currentEvent.title) {
         notify({
-        type: "danger",
-        title: "Validation failed", /* Message title */
-        message: "Please enter a title",
-        timeout: 5000 /* Timeout in millis */,
-        showAlways: false /* Boolean */,
-      }); 
-      return
+          type: "danger",
+          title: "Validation failed" /* Message title */,
+          message: "Please enter a title",
+          timeout: 5000 /* Timeout in millis */,
+          showAlways: false /* Boolean */,
+        });
+        return;
       }
 
       allEvents.push(currentEvent);
@@ -147,13 +146,12 @@
       events = allEvents.filter((e) => {
         return week
           .map((q) => {
-            console.log(q.toDateString());
             return q.toDateString();
           })
-          .includes(e.date);
+          .includes(new Date(e.date).toDateString());
       });
       isEdit = false;
-      currentEvent = null
+      currentEvent = null;
     } else {
       // create an alert
       notify({
@@ -169,28 +167,38 @@
 
   const deleteEvent = (e) => {
     var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
-      if(eventExists && eventExists.length > 0){
-        allEvents = allEvents.filter((q) => q.id != currentEvent.id);
-      }
-      isEdit = false;
-      toggle()
-  }
+    if (eventExists && eventExists.length > 0) {
+      allEvents = allEvents.filter((q) => q.id != currentEvent.id);
+    }
+    isEdit = false;
+    toggle();
+  };
 
   // print html
   const renderEvent = (session) => {
-
-    let tempStartTime = convertTimestoDatetimes(session.start).toLocaleTimeString('en-UK')
-    let tempEndTime = convertTimestoDatetimes(session.end).toLocaleTimeString('en-UK')
+    let tempStartTime = convertTimestoDatetimes(
+      session.start
+    ).toLocaleTimeString("en-UK");
+    let tempEndTime = convertTimestoDatetimes(session.end).toLocaleTimeString(
+      "en-UK"
+    );
 
     return `<div
     data-date="${session.date}"
     data-title="${session.title}"
     id="${session.id}"
     class="session ${session.class} ${session.track}"
-    style="grid-column: ${session.track}; grid-row: ${session.start} / ${session.end} "
+    style="grid-column: ${session.track}; grid-row: ${session.start} / ${
+      session.end
+    } "
   >
-    <h3 class=${session.title ? session.title : ""}>${session.title ? session.title : ""}</h3>
-    <span class="session-time">${tempStartTime.substring(0, tempStartTime.length - 3)} - ${tempEndTime.substring(0, tempEndTime.length - 3)}</span>
+    <h3 class=${session.title ? session.title : ""}>${
+      session.title ? session.title : ""
+    }</h3>
+    <span class="session-time">${tempStartTime.substring(
+      0,
+      tempStartTime.length - 3
+    )} - ${tempEndTime.substring(0, tempEndTime.length - 3)}</span>
     <span class="session-track">${session.track}</span>
   </div>`;
   };
@@ -276,7 +284,7 @@
       start: event.currentTarget.style.gridRowStart,
       end: formatEndTime(event.currentTarget.style.gridRowStart),
       date: new Date(currentDay).toDateString(),
-      id: uuidv4()
+      id: uuidv4(),
     };
 
     // set currentSession.target
@@ -285,8 +293,7 @@
 
   // open edit modal when event is clicked
   const editModal = (event) => {
-
-    isEdit = true
+    isEdit = true;
 
     event.stopPropagation();
 
@@ -296,7 +303,7 @@
       start: event.currentTarget.style.gridRowStart,
       end: event.currentTarget.style.gridRowEnd,
       date: event.currentTarget.dataset.date,
-      id: event.currentTarget.id
+      id: event.currentTarget.id,
     };
 
     // filter by id
@@ -309,7 +316,7 @@
 
   const handleTitleChange = (event) => {
     currentEvent.title = event.currentTarget.value;
-  }
+  };
 
   // handle dropdown change, update currentEvent
   const handleDDChangeStart = (event, selected) => {
@@ -348,6 +355,11 @@
         <button on:click={getCurrentWeek} class="menuButton btn btn-secondary"
           >Today</button
         >
+      </div>
+
+      <div class="weekdates" style="padding: 5px;">
+        <span>{week[0].toDateString()} - </span>
+        <span>{week[6].toDateString()}</span>
       </div>
 
       <div style="justify-content: flex-end; display: flex;">
@@ -459,13 +471,23 @@
       <ModalHeader {toggle}>Book a session</ModalHeader>
       <ModalBody>
         <div>
+          <Notifications />
           <div>
             <p>Please choose a title</p>
-            <input on:change={handleTitleChange} bind:value={currentEvent.title} />
+            <input
+              on:change={handleTitleChange}
+              bind:value={currentEvent.title}
+            />
           </div>
           <div style="padding: 20px 0px 20px 0px">
             <p>Please choose a date</p>
             <Flatpickr
+              on:change={(event) => {
+                currentEvent.track = new Date(
+                  event.detail[0][0]
+                ).toLocaleString("default", { weekday: "long" });
+                currentEvent.date = new Date(event.detail[0][0]).toISOString();
+              }}
               options={flatpickrOptions}
               bind:value={currentEvent.date}
             />
@@ -541,16 +563,18 @@
           {/if}
           <div style="display: flex; justify-content: flex-end;">
             <Button color="primary" on:click={saveEvent}>Save event</Button>
-            <Button color="secondary" on:click={() => {
-              isEdit = false;
-              toggle();
-            }}>Cancel</Button>
+            <Button
+              color="secondary"
+              on:click={() => {
+                isEdit = false;
+                toggle();
+              }}>Cancel</Button
+            >
           </div>
         </div>
       </ModalFooter>
     </Modal>
   </div>
-  <Notifications />
 </body>
 
 <!-- use lang="sass" for SASS -->
@@ -608,6 +632,14 @@
     :global(.dropdown-menu) {
       overflow: scroll !important;
       max-height: 200px !important;
+    }
+
+    :global(.weekdates){
+      position: relative;
+      left: 40px;
+      font-family: "Karantina", cursive;
+      font-size: 2em;
+      font-weight: normal;
     }
 
     :global(.dds_time_container) {
