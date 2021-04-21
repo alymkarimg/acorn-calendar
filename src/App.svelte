@@ -160,12 +160,11 @@
 
   const deleteEvent = (e) => {
     var eventExists = allEvents.filter((q) => q.id == currentEvent.id);
-    if(allEvents.length == 0){
+    if (allEvents.length == 0) {
       notify({
         type: "danger",
         title: "Error" /* Message title */,
-        message:
-          "No event to delete" /* Message */,
+        message: "No event to delete" /* Message */,
         timeout: 5000 /* Timeout in millis */,
         showAlways: false /* Boolean */,
       });
@@ -350,6 +349,10 @@
     <div class="text">
       <h1 class="title">Acorn calender</h1>
       <p class="sub-heading">Click on the calender to book an event</p>
+      <div class="weekdates" style="padding: 5px;">
+        <span>{week[0].toDateString()} - </span>
+        <span>{week[6].toDateString()}</span>
+      </div>
     </div>
 
     <div
@@ -359,11 +362,6 @@
         <button on:click={getCurrentWeek} class="menuButton btn btn-secondary"
           >Today</button
         >
-      </div>
-
-      <div class="weekdates" style="padding: 5px;">
-        <span>{week[0].toDateString()} - </span>
-        <span>{week[6].toDateString()}</span>
       </div>
 
       <div style="justify-content: flex-end; display: flex;">
@@ -567,10 +565,13 @@
           {/if}
           <div style="display: flex; justify-content: flex-end;">
             <Button color="primary" on:click={saveEvent}>Save event</Button>
-            <Button color="secondary" on:click={() => {
-              isEdit = false;
-              toggle();
-            }}>Cancel</Button>
+            <Button
+              color="secondary"
+              on:click={() => {
+                isEdit = false;
+                toggle();
+              }}>Cancel</Button
+            >
           </div>
         </div>
       </ModalFooter>
@@ -635,9 +636,10 @@
       max-height: 200px !important;
     }
 
-    :global(.weekdates){
+    :global(.weekdates) {
       position: relative;
-      left: 40px;
+      display: flex;
+      justify-content: center;
       font-family: "Karantina", cursive;
       font-size: 2em;
       font-weight: normal;
